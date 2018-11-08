@@ -6,5 +6,5 @@ command below before you use
 cd docker/
 docker-compose up -d
 docker exec -ti <container_id> bash
-rails db create
+rails:db create
 ```
