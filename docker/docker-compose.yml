@@ -1,0 +1,35 @@
+version: "3"
+services:
+  api_rails:
+    build:
+      context: ./rails #./railsにあるDocerfileを使ってビルドする
+
+    container_name: my_rails
+
+    command: bash /container_init.sh #コンテナにおいたシェルスクリプトの実行
+
+    ports:
+    - "3000:3000" #ホストの3000とコンテナの3000をマッピング
+
+    env_file: .env
+
+    links:
+    - db_postgres #webコンテナとdbコンテナを紐付け
+
+    volumes:
+    - ../rails_source:/rails_app #共有フォルダの設定
+
+    stdin_open: true #trueにしないと継続して立ち上がらない?
+
+  db_postgres:
+    image: postgres:10.1 #docker-hubからイメージ取ってきてそれでビルドする
+
+    container_name: my_postgres
+
+    ports:
+    - "5432:5432"
+
+    env_file: .env
+
+    volumes:
+    - ./data-volumes/var/lib/postgresql/data:/var/lib/postgresql/data:cached #ポスグレは/var/lib/postgresql/dataにデータ置いてるらしいので、それをホストと同期することで永続化が可能
